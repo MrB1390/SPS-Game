@@ -1,18 +1,24 @@
-import mongoose from "mongoose";
+
+
+import { Sequelize } from "sequelize";
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const dbConnect = process.env.MONGODBCONNECTIONSTRING;
+const dbConnect = 'postgres://postgres:CHANDRAPREMA10@localhost:5432/sps_game'; 
 
-const connectDB = async() => {
+const sequelize = new Sequelize(dbConnect, {
+    dialect: 'postgres',
+  });
+  
+  const connectDB = async () => {
     try {
-        const connection = await mongoose.connect(dbConnect);
-        console.log("DB Connected");
+      await sequelize.authenticate();
+      console.log('PostgreSQL connected successfully.');
     } catch (error) {
-        console.log(error);
+      console.error('Unable to connect to PostgreSQL:', error);
     }
-
-}
-
-export default connectDB;
+  };
+  
+  export default sequelize;
+  export { connectDB }

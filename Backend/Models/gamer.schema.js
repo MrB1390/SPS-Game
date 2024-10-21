@@ -1,42 +1,41 @@
-import mongoose from "mongoose";
 
-const gamerSchema = new mongoose.Schema({
+//POSTGRES
+import { DataTypes } from 'sequelize';
+import sequelize from '../Database/db.connect.js';
+
+const Gamer = sequelize.define('Gamer', {
   gamerId: {
-    type: Number,
-    default: 0,
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
   },
   playerName1: {
-    type: String,
-    required: [true, "firstName is required"],
-    maxLength: 50,
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      len: [1, 50],
+    },
   },
   playerName2: {
-    type: String,
-    required: [true, "lastName is required"],
-    maxLength: 50,
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      len: [1, 50],
+    },
   },
   player1Score: {
-    type: Number,
-    default: 0,
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
   },
   player2Score: {
-    type: Number,
-    default: 0,
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
   },
   winner: {
-    type: String,
+    type: DataTypes.STRING,
   },
+}, {
+  timestamps: false, // Disable timestamps if not needed
 });
 
-gamerSchema.pre("save", async function (next) {
-  try {
-    const count = await Gamer.countDocuments({});
-    this.gamerId = count + 1;
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
-
-const Gamer = mongoose.model("gamer", gamerSchema);
 export default Gamer;
